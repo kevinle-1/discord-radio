@@ -1,0 +1,47 @@
+[
+    {
+        "station": "92.9",
+        "bitrate": 32,
+        "stream_url": "https://stream.scahw.com.au/live/6ppm_32.stream/playlist.m3u8"
+    },
+    {
+        "station": "93.7",
+        "bitrate": 48,
+        "stream_url": "https://23153.live.streamtheworld.com/NOVA_937_AAC48.aac"
+    },
+    {
+        "station": "94.5",
+        "bitrate": 48,
+        "stream_url": "https://ic6ti.scahw.com.au/6mix_128"
+    },
+    {
+        "station": "triple j 99.3",
+        "bitrate": 320,
+        "stream_url": "http://192.168.1.101:9981/stream/channelid/938687434?profile=pass"
+    },
+    {
+        "station": "triple j Underground",
+        "bitrate": 320,
+        "stream_url": "http://192.168.1.101:9981/stream/channelid/2126538567?profile=pass"
+    },
+    {
+        "station": "96.1",
+        "bitrate": 64,
+        "stream_url": "https://ais-arn.streamguys1.com/au_012/playlist.m3u8"
+    },
+    {
+        "station": "92.1",
+        "bitrate": 64,
+        "stream_url": "https://live.rtrfm.com.au/stream1"
+    },
+    {
+        "station": "Curtin FM",
+        "bitrate": 64,
+        "stream_url": "http://cp.usa7.fastcast4u.com:6192/"
+    },
+    {
+        "station": "98.5",
+        "bitrate": 64,
+        "stream_url": "https://stream2.cnmns.net/sfm"
+    }
+]
