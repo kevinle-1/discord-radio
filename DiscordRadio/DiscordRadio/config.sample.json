@@ -1,0 +1,10 @@
+{
+  "token": "DISCORD_BOT_TOKEN",
+  "stations": [
+    {
+      "name": "triple j sydney",
+      "bitrate": 96,
+      "stream": "https://live-radio01.mediahubaustralia.com/2TJW/mp3"
+    }
+  ]
+}

@@ -8,7 +8,7 @@ namespace DiscordRadio.Providers
 {
     public class DiscordSession
     {
-        public DiscordSocketClient Client { get; } 
+        public DiscordSocketClient Client { get; }
 
         private DiscordSession(DiscordSocketClient client)
         {
@@ -19,7 +19,8 @@ namespace DiscordRadio.Providers
         {
             var client = new DiscordSocketClient();
 
-            var config = JsonConvert.DeserializeObject<Configuration>(File.ReadAllText("config.json")).Token;
+            var config = JsonConvert.DeserializeObject<Configuration>(
+                File.ReadAllText(Configuration.ConfigurationFile)).Token;
 
             await client.LoginAsync(TokenType.Bot, config);
             await client.StartAsync();
