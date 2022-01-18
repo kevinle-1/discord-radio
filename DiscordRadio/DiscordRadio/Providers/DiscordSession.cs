@@ -1,7 +1,5 @@
 ﻿using Discord;
 using Discord.WebSocket;
-using Newtonsoft.Json;
-using System.IO;
 using System.Threading.Tasks;
 
 namespace DiscordRadio.Providers
@@ -19,10 +17,7 @@ namespace DiscordRadio.Providers
         {
             var client = new DiscordSocketClient();
 
-            var config = JsonConvert.DeserializeObject<Configuration>(
-                File.ReadAllText(Configuration.ConfigurationFile)).Token;
-
-            await client.LoginAsync(TokenType.Bot, config);
+            await client.LoginAsync(TokenType.Bot, Config.GetDiscordToken());
             await client.StartAsync();
 
             return new DiscordSession(client); 

@@ -1,70 +1,81 @@
 ﻿using Discord;
+using Discord.Audio;
 using Discord.WebSocket;
 using DiscordRadio.Models;
 using DiscordRadio.Providers;
-using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace DiscordRadio
 {
-    public class Radio
+    public class Radio 
     {
         private DiscordSession discord;
 
-        private static Configuration config; 
-
-        public Radio()
-        {
-            config = JsonConvert.DeserializeObject<Configuration>(
-                File.ReadAllText(Configuration.ConfigurationFile));
-        }
+        private IAudioClient activeAudioClient;
+        private Thread streamingThread; 
 
         public async Task Bot()
         {
             discord = await DiscordSession.GetDiscordClient();
             
-            discord.Client.Ready += BuildCommands;
+            discord.Client.Ready += RegisterCommands;
+
             discord.Client.SlashCommandExecuted += SlashCommandHandler;
+            discord.Client.SelectMenuExecuted += StationSelectMenuHandler;
 
             await Task.Delay(Timeout.Infinite);
         }
 
-        public static async Task HandleRadioCommandAsync(SocketSlashCommand command)
+        public async Task StationSelectMenuHandler(SocketMessageComponent arg)
         {
-            
-            var stationSelector = new SelectMenuBuilder()
-            {
-                Placeholder = "Stations",
-                CustomId = "radio-station-menu",
-                MinValues = 1,
-                MaxValues = 1,
-                Options = config.Stations.Select(station =>
-                    new SelectMenuOptionBuilder()
-                    {
-                        Label = station.Name,
-                        Description = $"{station.Bitrate}kbps",
-                        Value = station.Name,
-                        Emote = new Emoji("📻")
-                    }).ToList()
-            };
+            var stationName = arg.Data.Values.Single();
 
-            var builder = new ComponentBuilder()
-                .WithSelectMenu(stationSelector);
+            var channel = (arg.User as IGuildUser)?.VoiceChannel;
+
+            if (channel == null)
+            {
+                await arg.RespondAsync("Join a voice channel!");
+                return;
+            }
+
+            var botInChannel = await channel.GetUserAsync(discord.Client.CurrentUser.Id) != null;
 
             try
             {
-                await command.RespondAsync("Select a station:", components: builder.Build());
+                streamingThread = new Thread(async () =>
+                {
+                    if(!botInChannel || activeAudioClient == null)
+                        activeAudioClient = await channel.ConnectAsync();
 
+                    if (streamingThread != null)
+                    {
+                        streamingThread.Interrupt(); // Not cleaning up properly 
+                    }
+
+                    await new AudioStreamer(activeAudioClient)
+                    .StreamAudio(Config.GetStationUrlByName(stationName));
+                });
+
+                streamingThread.Start(); 
             }
-            catch (Discord.Net.HttpException e)
+            catch(Exception e)
             {
                 Console.WriteLine(e.Message); 
             }
+
+            // Set bot nick 
+            await arg.RespondAsync($"Connecting to station: {stationName}"); // TODO: Use an embed
+        }
+
+        public static async Task RadioCommandHandler(SocketSlashCommand command)
+        {
+            var builder = new ComponentBuilder()
+                .WithSelectMenu(Components.StationSelectorMenu);
+
+            await command.RespondAsync("Select a station:", components: builder.Build());
         }
 
         public static async Task SlashCommandHandler(SocketSlashCommand command)
@@ -76,7 +87,7 @@ namespace DiscordRadio
             await handler(command); 
         }
 
-        public async Task BuildCommands()
+        public async Task RegisterCommands()
         {
             foreach(var command in Commands.cmd.Keys)
             {

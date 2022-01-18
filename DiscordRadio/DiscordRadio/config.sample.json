@@ -2,9 +2,10 @@
   "token": "DISCORD_BOT_TOKEN",
   "stations": [
     {
-      "name": "triple j sydney",
+      "name": "triple j 99.3 Perth",
       "bitrate": 96,
-      "stream": "https://live-radio01.mediahubaustralia.com/2TJW/mp3"
+      "description": "Best new music from around Australia & the world",
+      "stream": "https://abcradiolivehls-lh.akamaihd.net/i/triplejwa_1@326649/master.m3u8"
     }
   ]
 }

@@ -1,10 +1,12 @@
 ﻿namespace DiscordRadio.Models
 {
-    class Station
+    public class Station
     {
         public string Name { get; set; }
 
         public string Bitrate { get; set; }
+
+        public string Description { get; set; }
 
         public string Stream { get; set; }
     }

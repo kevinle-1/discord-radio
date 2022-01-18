@@ -15,9 +15,9 @@ namespace DiscordRadio.Models
                     new SlashCommandBuilder()
                     {
                         Name = "radio",
-                        Description = "Load a radio station"
+                        Description = "Load a radio station "
                     },
-                    async (command) => await Radio.HandleRadioCommandAsync(command)
+                    async (command) => await Radio.RadioCommandHandler(command)
                 }
             };
     }
