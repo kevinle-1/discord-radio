@@ -15,11 +15,9 @@ namespace DiscordRadio.Providers
 
         public async Task StreamAudio(string streamUrl)
         {
-            var discord = audioClient.CreatePCMStream(AudioApplication.Mixed);
-            await discord.FlushAsync();
-
             using (var ffmpeg = GetStream(streamUrl))
             using (var output = ffmpeg.StandardOutput.BaseStream)
+            using (var discord = audioClient.CreatePCMStream(AudioApplication.Mixed))
             {
                 try { await output.CopyToAsync(discord); }
                 finally { await discord.FlushAsync(); }

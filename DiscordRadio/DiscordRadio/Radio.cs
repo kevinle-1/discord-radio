@@ -14,9 +14,6 @@ namespace DiscordRadio
     {
         private DiscordSession discord;
 
-        private IAudioClient activeAudioClient;
-        private Thread streamingThread; 
-
         public async Task Bot()
         {
             discord = await DiscordSession.GetDiscordClient();
@@ -31,7 +28,8 @@ namespace DiscordRadio
 
         public async Task StationSelectMenuHandler(SocketMessageComponent arg)
         {
-            var stationName = arg.Data.Values.Single();
+            var station = Config.GetStationByName(arg.Data.Values.Single());
+            IAudioClient audioClient = null; 
 
             var channel = (arg.User as IGuildUser)?.VoiceChannel;
 
@@ -45,29 +43,21 @@ namespace DiscordRadio
 
             try
             {
-                streamingThread = new Thread(async () =>
+                new Thread(async () =>
                 {
-                    if(!botInChannel || activeAudioClient == null)
-                        activeAudioClient = await channel.ConnectAsync();
+                    var audioClient = await channel.ConnectAsync();
 
-                    if (streamingThread != null)
-                    {
-                        streamingThread.Interrupt(); // Not cleaning up properly 
-                    }
+                    await new AudioStreamer(audioClient)
+                    .StreamAudio(station.Stream);
+                }).Start();
 
-                    await new AudioStreamer(activeAudioClient)
-                    .StreamAudio(Config.GetStationUrlByName(stationName));
-                });
-
-                streamingThread.Start(); 
+                await arg.RespondAsync(embed: Components.BuildStationSelectEmbed(station));
+                // TODO: Consider deleting original message 
             }
             catch(Exception e)
             {
-                Console.WriteLine(e.Message); 
+                Console.WriteLine(e.Message); // TODO better 
             }
-
-            // Set bot nick 
-            await arg.RespondAsync($"Connecting to station: {stationName}"); // TODO: Use an embed
         }
 
         public static async Task RadioCommandHandler(SocketSlashCommand command)

@@ -2,10 +2,11 @@
   "token": "DISCORD_BOT_TOKEN",
   "stations": [
     {
-      "name": "triple j 99.3 Perth",
+      "name": "triple j 99.3",
       "bitrate": 96,
       "description": "Best new music from around Australia & the world",
-      "stream": "https://abcradiolivehls-lh.akamaihd.net/i/triplejwa_1@326649/master.m3u8"
+      "stream": "https://abcradiolivehls-lh.akamaihd.net/i/triplejwa_1@326649/master.m3u8",
+      "thumbnail": "https://cdn-radiotime-logos.tunein.com/s25508g.png"
     }
   ]
 }

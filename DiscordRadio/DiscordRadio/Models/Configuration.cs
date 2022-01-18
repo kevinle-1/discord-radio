@@ -24,10 +24,10 @@ namespace DiscordRadio
             return config.Stations;
         }
 
-        public static string GetStationUrlByName(string name)
+        public static Station GetStationByName(string name)
         {
             return config.Stations
-                .Single(s => s.Name == name).Stream;
+                .Single(s => s.Name == name);
         }
     }
 

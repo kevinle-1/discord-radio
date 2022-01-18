@@ -23,6 +23,20 @@ namespace DiscordRadio.Models
                     }).ToList()
         };
 
-        // Radio Embed
+        public static Embed BuildStationSelectEmbed(Station station)
+        {
+            return new EmbedBuilder()
+            {
+                Title = $"Now Playing: {station.Name}",
+                Url = station.Stream,
+                Description = $"**Bitrate:** {station.Bitrate}kbps\nPerth, Australia\n\n{station.Description}",
+                ThumbnailUrl = station.Thumbnail,
+                Color = new Color(139, 205, 80),
+                Footer = new EmbedFooterBuilder()
+                {
+                    Text = "Warning: Currently in beta, likely to have issues"
+                }
+            }.Build();
+        }
     }
 }
